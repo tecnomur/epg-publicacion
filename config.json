@@ -12,7 +12,21 @@
   "aliases": {
     "M+ LCAMPEONES HD": "Movistar Liga de Campeones",
     "M+ LCAMPEONES 4K": "Movistar Liga de Campeones",
-    "M+ LCAMPEONES SD": "Movistar Liga de Campeones"
+    "M+ LCAMPEONES SD": "Movistar Liga de Campeones",
+    "A3 UHD": "Antena 3",
+    "La S  ptima": "La Séptima",
+    "Punt": "À Punt",
+    "Canal Sur Andaluc  a": "Canal Sur Andalucía",
+    "Andaluc  a TV": "Andalucía TV",
+    "Arag  n TV Internacional": "Aragón TV Internacional",
+    "Televisi  n Canaria": "TV Canaria",
+    "La 8 Mediterraneo": "La Ocho Mediterráneo",
+    "Betev   Barcelona": "Betevé",
+    "Telemadrid INT": "Telemadrid Internacional",
+    "CASTILLA LA MANCHA": "CMM TV",
+    "ESPORT3 CAT HD": "Esport 3",
+    "M+ Acci  n": "M+ Acción",
+    "M+ Cl  sicos": "M+ Clásicos"
   },
   "minimum_coverage": 0.05
 }
