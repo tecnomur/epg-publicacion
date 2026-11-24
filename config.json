@@ -26,7 +26,11 @@
     "CASTILLA LA MANCHA": "CMM TV",
     "ESPORT3 CAT HD": "Esport 3",
     "M+ Acci  n": "M+ Acción",
-    "M+ Cl  sicos": "M+ Clásicos"
+    "M+ Cl  sicos": "M+ Clásicos",
+    "3Cat   El 33": "El 33 Catalunya",
+    "Rakuten TV Comedia": "Comedia (Rakuten TV)",
+    "Rakuten TV Acci  n": "Películas de Acción (Rakuten TV)",
+    "MyTime Movie Network": "MyTime Movie Network (Rakuten TV)"
   },
   "minimum_coverage": 0.05
 }
