@@ -1,0 +1,33 @@
+name: Generar y publicar EPG
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 6,18 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: epg
+  cancel-in-progress: false
+jobs:
+  generate:
+    if: vars.PUBLICATION_ALLOWED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - name: Generar
+        env:
+          M3U_URL: ${{ secrets.M3U_URL }}
+        run: python3 generar_epg.py
+      - name: Publicar únicamente XMLTV comprimido
+        run: |
+          test -s output/epg.xml.gz
+          gzip -t output/epg.xml.gz
+          cp output/epg.xml.gz epg.xml.gz
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- epg.xml.gz
+          if ! git diff --cached --quiet; then
+            git commit -m "Actualizar EPG"
+            git push
+          fi
