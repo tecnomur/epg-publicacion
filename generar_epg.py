@@ -33,6 +33,17 @@ def alternate(s):
     s=re.sub(r"^dazn\s+([1-4])\s+esp$",r"DAZN \1",s)
     return norm(s)
 
+def spelling_key(s):
+    # Some provider feeds replace accented letters with two spaces.
+    s=unicodedata.normalize("NFC",s.casefold())
+    s=re.sub(r"[áéíóúüñçàèìòùâêîôû]", "  ", s)
+    return norm(s)
+
+def fallback_keys(s):
+    s=re.sub(r"^\s*(?:\[(?:es|esp)\]|\|(?:es|esp)\||(?:esp|spain)\s*[:|_-])\s*","",s,flags=re.I)
+    s=re.sub(r"\s+(?:full|hd\+|fhd\+|1080i|2160p)\s*$","",s,flags=re.I)
+    return {norm(s),alternate(s),spelling_key(s)}-{""}
+
 def playlist(data):
     for line in data.decode("utf-8-sig",errors="replace").splitlines():
         if not line.startswith("#EXTINF:"): continue
@@ -57,6 +68,8 @@ def main():
             for cid,c in channels.items():
                 for n in [cid,*[x.text or "" for x in c.findall("display-name")]]:
                     if norm(n): index[norm(n)].add(cid)
+                    k=spelling_key(n)
+                    if k and k!=norm(n): index["spell:"+k].add(cid)
             sources.append((source["name"],channels,programmes,index))
         except Exception:
             print("Fuente no disponible:",source["name"])
@@ -104,6 +117,18 @@ def main():
                             candidates.update(index.get(alternate(n),set()))
                     if len(candidates)==1:
                         found.add((idx,next(iter(candidates)))); break
+        if not found:
+            for tvg,name in names:
+                for idx,(label,channels,programmes,index) in enumerate(sources):
+                    candidates=set()
+                    for n in (tvg,name):
+                        if not n: continue
+                        for k in fallback_keys(n):
+                            candidates.update(index.get(k,set()))
+                        if re.search(r"\w\s{2,}\w",n):
+                            candidates.update(index.get("spell:"+spelling_key(n),set()))
+                    if len(candidates)==1:
+                        found.add((idx,next(iter(candidates)))); break
         if len(found)!=1:
             missing.append({"id":cid,"names":names,"reason":"ambiguo o sin coincidencia"}); continue
         idx,original=next(iter(found))
@@ -124,7 +149,7 @@ def main():
     if previous.exists():
         old_ids={c.get("id") for c in ET.fromstring(gzip.decompress(previous.read_bytes())).findall("channel")}
         new_ids={c.get("id") for c in result.findall("channel")}
-        if len(old_ids-new_ids)>max(2,int(len(old_ids)*0.05)):
+        if old_ids-new_ids or len(new_ids)<len(old_ids):
             raise SystemExit("Protección: se perderían demasiadas asociaciones existentes")
     result.extend(out)
     Path("output/epg.xml.gz").write_bytes(gzip.compress(ET.tostring(result,encoding="utf-8",xml_declaration=True),mtime=0))
