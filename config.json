@@ -1,0 +1,18 @@
+{
+  "sources": [
+    {
+      "name": "DobleM",
+      "url": "https://raw.githubusercontent.com/davidmuma/EPG_dobleM/master/guiatv.xml.gz"
+    },
+    {
+      "name": "EPGShare01",
+      "url": "https://epgshare01.online/epgshare01/epg_ripper_ES1.xml.gz"
+    }
+  ],
+  "aliases": {
+    "M+ LCAMPEONES HD": "Movistar Liga de Campeones",
+    "M+ LCAMPEONES 4K": "Movistar Liga de Campeones",
+    "M+ LCAMPEONES SD": "Movistar Liga de Campeones"
+  },
+  "minimum_coverage": 0.05
+}
